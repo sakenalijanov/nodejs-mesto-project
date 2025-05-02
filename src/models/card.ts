@@ -1,5 +1,8 @@
-import { Document, model, ObjectId, Schema } from "mongoose";
-import validator from "validator";
+import {
+  Document, model, ObjectId, Schema,
+} from 'mongoose';
+import validator from 'validator';
+
 export interface ICard extends Document {
   name: string;
   link: string;
@@ -34,9 +37,9 @@ const cardSchema = new Schema<ICard>({
     required: true,
     validate: {
       validator: (url: string) => validator.isURL(url),
-      message: "Неправильный формат ссылки",
+      message: 'Неправильный формат ссылки',
     },
   },
 });
 
-export default model<ICard>("card", cardSchema);
+export default model<ICard>('card', cardSchema);

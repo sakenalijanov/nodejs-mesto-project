@@ -1,5 +1,6 @@
-import { Document, model, Schema } from "mongoose";
-import validator from "validator";
+import { Document, model, Schema } from 'mongoose';
+import validator from 'validator';
+
 export interface IUser extends Document {
   name: string;
   about: string;
@@ -24,9 +25,9 @@ const userSchema = new Schema<IUser>({
     required: true,
     validate: {
       validator: (url: string) => validator.isURL(url),
-      message: "Неправильный формат ссылки",
+      message: 'Неправильный формат ссылки',
     },
   },
 });
 
-export default model<IUser>("user", userSchema);
+export default model<IUser>('user', userSchema);
