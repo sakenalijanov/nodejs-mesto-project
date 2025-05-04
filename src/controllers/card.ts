@@ -35,10 +35,14 @@ export const createCard = async (
 
 export const deleteCard = async (req: Request, res: Response) => {
   const { cardId } = req.params;
+  if (!Types.ObjectId.isValid(cardId)) {
+    res.status(404).send({ message: 'Неверный id карточки' });
+    return;
+  }
   Card.findByIdAndDelete(cardId)
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Неверный id карточки' });
+        res.status(404).send({ message: 'Карточка не найдена' });
       }
       res.send({ data: card });
     })
@@ -48,12 +52,8 @@ export const deleteCard = async (req: Request, res: Response) => {
 export const likeCard = (req: Request, res: Response) => {
   const userId = res.locals.user._id;
   const { cardId } = req.params;
-  if (!Types.ObjectId.isValid(userId)) {
-    res.status(404).send({ message: 'Пользователь не найден' });
-    return;
-  }
   if (!Types.ObjectId.isValid(cardId)) {
-    res.status(404).send({ message: 'Неверный id карточки' });
+    res.status(400).send({ message: 'Неверный id карточки' });
     return;
   }
   Card.findByIdAndUpdate(
@@ -62,20 +62,20 @@ export const likeCard = (req: Request, res: Response) => {
     { new: true },
   )
     .then((card) => {
+      if (!card) {
+        res.status(400).send({ message: 'Карточка не найдена' });
+      }
       res.send({ data: card });
     })
+
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 export const dislikeCard = (req: Request, res: Response) => {
   const userId = res.locals.user._id;
   const { cardId } = req.params;
-  if (!Types.ObjectId.isValid(userId)) {
-    res.status(404).send({ message: 'Пользователь не найден' });
-    return;
-  }
   if (!Types.ObjectId.isValid(cardId)) {
-    res.status(404).send({ message: 'Неверный id карточки' });
+    res.status(400).send({ message: 'Неверный id карточки' });
     return;
   }
   Card.findByIdAndUpdate(cardId, { $pull: { likes: userId } }, { new: true })

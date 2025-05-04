@@ -1,15 +1,17 @@
+import 'dotenv/config';
 import express, { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import userRoutes from './routes/user';
 import cardRoutes from './routes/card';
 
-const { PORT = 3000 } = process.env;
+const port = process.env.PORT;
+const dbUrl = process.env.MONGO_DB_URL;
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-mongoose.connect('mongodb://localhost:27017/mestodb');
+mongoose.connect(dbUrl as string);
 
 app.use(
   (_req: Request, res: Response, next: NextFunction) => {
@@ -22,7 +24,10 @@ app.use(
 
 app.use('/users', userRoutes);
 app.use('/cards', cardRoutes);
+app.use((req: Request, res: Response) => {
+  res.status(404).json({ message: 'Страница не найдена' });
+});
 
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`App listening on port ${port}`);
 });
