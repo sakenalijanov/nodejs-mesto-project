@@ -17,3 +17,6 @@ yarn.lock
 
 # Typescript build
 dist
+
+# Env
+.env
